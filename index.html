@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Working Hours Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">⏱</span>
+        <span class="brand-name">Working Hours</span>
+      </div>
+      <div class="user" id="user">
+        <div class="avatar" id="avatar">?</div>
+        <div class="user-meta">
+          <span class="user-name" id="userName">—</span>
+          <span class="user-email" id="userEmail">—</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Clock card -->
+      <section class="card clock-card">
+        <div class="clock-status">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="statusText">Clocked out</span>
+        </div>
+        <div class="clock-time" id="liveClock">--:--:--</div>
+        <div class="clock-date" id="liveDate">—</div>
+
+        <div class="session" id="sessionInfo" hidden>
+          Clocked in at <strong id="sessionStart">—</strong>
+          · Elapsed <strong id="sessionElapsed">00:00:00</strong>
+        </div>
+
+        <div class="clock-actions">
+          <button class="btn btn-in" id="clockInBtn">Clock In</button>
+          <button class="btn btn-out" id="clockOutBtn" disabled>Clock Out</button>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="stats">
+        <div class="card stat">
+          <span class="stat-label">This week</span>
+          <span class="stat-value" id="weekTotal">0h 0m</span>
+          <span class="stat-sub" id="weekTarget">of 40h target</span>
+        </div>
+        <div class="card stat">
+          <span class="stat-label">Avg / day</span>
+          <span class="stat-value" id="avgDay">0h 0m</span>
+          <span class="stat-sub">across history</span>
+        </div>
+        <div class="card stat">
+          <span class="stat-label">Days logged</span>
+          <span class="stat-value" id="daysLogged">0</span>
+          <span class="stat-sub">total entries</span>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section class="card history-card">
+        <div class="history-head">
+          <h2>History</h2>
+          <span class="muted" id="historyCount">0 entries</span>
+        </div>
+        <div class="table-wrap">
+          <table class="history">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Total</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Static mock — clock in/out is frontend-only and resets on refresh.</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
