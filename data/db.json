@@ -1,7 +1,4 @@
 {
-  "user": {
-    "weeklyTarget": 40
-  },
   "entries": [
     { "id": 1,  "date": "2026-06-26", "clockIn": "09:02", "clockOut": "17:34" },
     { "id": 2,  "date": "2026-06-25", "clockIn": "08:48", "clockOut": "16:55" },

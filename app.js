@@ -2,7 +2,6 @@
 // Clock in/out updates the in-memory state only; nothing is persisted.
 
 const state = {
-  user: null,
   entries: [],      // from mock db + any added this session
   activeSince: null // Date when currently clocked in, or null
 };
@@ -53,11 +52,6 @@ function weekKey(dateStr) {
 }
 
 // ---- Rendering --------------------------------------------------------
-
-function renderUser() {
-  const u = state.user;
-  $("weekTarget").textContent = `of ${u.weeklyTarget}h target`;
-}
 
 function renderHistory() {
   const body = $("historyBody");
@@ -171,16 +165,13 @@ async function init() {
   try {
     const res = await fetch("data/db.json");
     const db = await res.json();
-    state.user = db.user;
     state.entries = db.entries.map((e) => ({ ...e }));
   } catch (err) {
     // Fallback so the page still renders if fetch is blocked (e.g. file://)
     console.error("Could not load mock db, using fallback.", err);
-    state.user = { weeklyTarget: 40 };
     state.entries = [];
   }
 
-  renderUser();
   renderClockState();
   renderHistory();
   renderStats();
