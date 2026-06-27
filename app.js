@@ -56,9 +56,6 @@ function weekKey(dateStr) {
 
 function renderUser() {
   const u = state.user;
-  $("userName").textContent = u.name;
-  $("userEmail").textContent = u.email;
-  $("avatar").textContent = (u.name || "?").trim().charAt(0).toUpperCase();
   $("weekTarget").textContent = `of ${u.weeklyTarget}h target`;
 }
 
@@ -82,7 +79,6 @@ function renderHistory() {
       <td>${e.clockIn}</td>
       <td>${e.clockOut || "—"}</td>
       <td>${totalCell}</td>
-      <td class="note-cell">${e.note || ""}</td>
     `;
     body.appendChild(tr);
   }
@@ -158,7 +154,6 @@ function clockOut() {
     date: end.toISOString().slice(0, 10),
     clockIn: fmtClock(start).slice(0, 5),
     clockOut: fmtClock(end).slice(0, 5),
-    note: "Logged this session",
     _new: true
   });
 
@@ -181,7 +176,7 @@ async function init() {
   } catch (err) {
     // Fallback so the page still renders if fetch is blocked (e.g. file://)
     console.error("Could not load mock db, using fallback.", err);
-    state.user = { name: "Demo User", email: "demo@example.com", weeklyTarget: 40 };
+    state.user = { weeklyTarget: 40 };
     state.entries = [];
   }
 

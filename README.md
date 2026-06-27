@@ -8,7 +8,7 @@ This is a mock / prototype. Clock in and clock out work entirely in the browser 
 
 - Live clock with current date
 - Clock In / Clock Out with an active-session timer
-- History table (date, in, out, total, note)
+- History table (date, in, out, total)
 - Summary stats: this week's total, average per day, days logged
 - Seed data loaded from a mock JSON "database"
 
