@@ -36,6 +36,7 @@ jobs:
             /m `
             /p:Configuration=${{ matrix.configuration }} `
             /p:Platform=${{ matrix.platform }} `
+            /p:SignMode=Off `
             /verbosity:minimal
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -45,5 +46,5 @@ jobs:
           name: wdmdriver-${{ matrix.configuration }}-${{ matrix.platform }}
           path: |
             driver/**/${{ matrix.platform }}/${{ matrix.configuration }}/wdmdriver.sys
-            driver/**/${{ matrix.platform }}/${{ matrix.configuration }}/wdmdriver.inf
+            driver/wdmdriver.inf
           if-no-files-found: error

@@ -49,7 +49,14 @@
     <ClCompile Include="wdmdriver.c" />
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="wdmdriver.inf" />
+    <!--
+      Kept as a project file but not as a built <Inf> item. The hosted CI
+      runner's WDK has a broken InfVerif task (fails to load x86\InfVerif.dll),
+      which is unrelated to driver compilation. Excluding it from the build
+      pipeline keeps the .sys compile/link clean; the INF is still shipped in
+      the repo for installation.
+    -->
+    <None Include="wdmdriver.inf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
