@@ -8,16 +8,18 @@ on:
 
 jobs:
   build:
+    # The windows-2022 runner ships with Visual Studio 2022 and the Windows
+    # Driver Kit (WDK) pre-installed, so the driver builds with MSBuild
+    # directly -- no SDK/WDK installation step is required.
     runs-on: windows-2022
 
     strategy:
+      fail-fast: false
       matrix:
         configuration: [Debug, Release]
         platform: [x64]
 
     env:
-      # WDK / SDK version we build against (Windows 11, 24H2).
-      WDK_SDK_VERSION: "10.0.26100"
       SOLUTION: driver/wdmdriver.sln
 
     steps:
@@ -27,61 +29,6 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
-      - name: Install Windows SDK (${{ env.WDK_SDK_VERSION }})
-        shell: pwsh
-        run: |
-          $url = "https://go.microsoft.com/fwlink/?linkid=2272779"  # Win11 24H2 SDK
-          Write-Host "Downloading Windows SDK installer..."
-          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\winsdksetup.exe"
-          Write-Host "Installing Windows SDK..."
-          Start-Process -FilePath "$env:RUNNER_TEMP\winsdksetup.exe" `
-            -ArgumentList "/features", "+", "/q", "/norestart", "/ceip", "off" `
-            -Wait -NoNewWindow
-
-      - name: Install Windows Driver Kit (${{ env.WDK_SDK_VERSION }})
-        shell: pwsh
-        run: |
-          $url = "https://go.microsoft.com/fwlink/?linkid=2272324"  # Win11 24H2 WDK
-          Write-Host "Downloading WDK installer..."
-          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\wdksetup.exe"
-          Write-Host "Installing WDK..."
-          Start-Process -FilePath "$env:RUNNER_TEMP\wdksetup.exe" `
-            -ArgumentList "/q", "/norestart", "/ceip", "off" `
-            -Wait -NoNewWindow
-
-      - name: Install WDK Visual Studio extension
-        shell: pwsh
-        run: |
-          # The WDK installer drops the VSIX that teaches MSBuild about the
-          # "Driver" project type. Locate it and install it into VS 2022.
-          $vsix = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Vsix" `
-                    -Recurse -Filter "WDK.vsix" -ErrorAction SilentlyContinue |
-                  Select-Object -First 1
-          if (-not $vsix) {
-            Write-Error "WDK.vsix not found -- cannot build a Driver project without it."
-            exit 1
-          }
-          Write-Host "Found VSIX: $($vsix.FullName)"
-
-          $vsixInstaller = Get-ChildItem `
-            "C:\Program Files\Microsoft Visual Studio\2022" `
-            -Recurse -Filter "VSIXInstaller.exe" -ErrorAction SilentlyContinue |
-            Select-Object -First 1
-          if (-not $vsixInstaller) {
-            Write-Error "VSIXInstaller.exe not found."
-            exit 1
-          }
-
-          Write-Host "Installing VSIX with $($vsixInstaller.FullName)..."
-          $p = Start-Process -FilePath $vsixInstaller.FullName `
-            -ArgumentList "/quiet", "/admin", $vsix.FullName `
-            -Wait -PassThru -NoNewWindow
-          # 1001 = already installed; treat as success.
-          if ($p.ExitCode -ne 0 -and $p.ExitCode -ne 1001) {
-            Write-Error "VSIX install failed with exit code $($p.ExitCode)"
-            exit 1
-          }
-
       - name: Build driver (${{ matrix.configuration }}|${{ matrix.platform }})
         shell: pwsh
         run: |
@@ -89,7 +36,6 @@ jobs:
             /m `
             /p:Configuration=${{ matrix.configuration }} `
             /p:Platform=${{ matrix.platform }} `
-            /p:SignMode=Off `
             /verbosity:minimal
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 

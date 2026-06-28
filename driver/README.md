@@ -32,7 +32,7 @@ machine you must enable test signing (`bcdedit /set testsigning on`).
 
 ## Building in CI
 
-`.github/workflows/build-driver.yml` runs on a Windows runner. It installs
-the Windows SDK + WDK and the WDK Visual Studio extension, builds the Debug
-and Release x64 configurations with MSBuild, and uploads the resulting
-`.sys` / `.inf` as build artifacts.
+`.github/workflows/build-driver.yml` runs on the `windows-2022` runner,
+which already has Visual Studio 2022 and the Windows Driver Kit
+pre-installed. It builds the Debug and Release x64 configurations with
+MSBuild and uploads the resulting `.sys` / `.inf` as build artifacts.
